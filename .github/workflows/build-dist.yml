@@ -1,0 +1,38 @@
+name: Build dist
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'build.sh'
+      - '.github/workflows/build-dist.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-dist-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rebuild dist/
+        run: ./build.sh
+
+      - name: Commit dist/ if changed
+        run: |
+          if git diff --quiet dist/; then
+            echo "No dist/ changes — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/
+          git commit -m "ci: rebuild dist/ [skip ci]"
+          git push

@@ -31,15 +31,15 @@ Verify with `ls -la ~/.claude/skills/` — each entry should be a symlink into `
 ## Adding or updating a skill
 
 1. Edit files under `skills/<name>/`
-2. Run `./build.sh` to refresh `dist/`
-3. Commit and push
+2. Commit and push
 
 ```bash
-./build.sh
 git add -A
 git commit -m "update <skill-name>"
 git push
 ```
+
+A GitHub Action ([`.github/workflows/build-dist.yml`](.github/workflows/build-dist.yml)) auto-rebuilds `dist/*.zip` on every push that touches `skills/` or `build.sh` and commits the refreshed zips back to `main` with `[skip ci]`. You can also rebuild locally with `./build.sh` if you want to verify before pushing, or trigger the workflow manually from the Actions tab.
 
 On other machines: `git pull` — symlinks pick up changes automatically, no re-install needed.
 
