@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Claude Code Insights — {DATE}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #334155; line-height: 1.65; padding: 48px 24px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 32px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    h2 { font-size: 20px; font-weight: 600; color: #0f172a; margin-top: 48px; margin-bottom: 16px; }
+    .subtitle { color: #64748b; font-size: 15px; margin-bottom: 32px; }
+
+    /* Navigation */
+    .nav-toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 32px 0; padding: 16px; background: white; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .nav-toc a { font-size: 12px; color: #64748b; text-decoration: none; padding: 6px 12px; border-radius: 6px; background: #f1f5f9; transition: all 0.15s; }
+    .nav-toc a:hover { background: #e2e8f0; color: #334155; }
+
+    /* Stats row */
+    .stats-row { display: flex; gap: 24px; margin-bottom: 40px; padding: 20px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 24px; font-weight: 700; color: #0f172a; }
+    .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; }
+
+    /* At a Glance */
+    .at-a-glance { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #f59e0b; border-radius: 12px; padding: 20px 24px; margin-bottom: 32px; }
+    .glance-title { font-size: 16px; font-weight: 700; color: #92400e; margin-bottom: 16px; }
+    .glance-sections { display: flex; flex-direction: column; gap: 12px; }
+    .glance-section { font-size: 14px; color: #78350f; line-height: 1.6; }
+    .glance-section strong { color: #92400e; }
+    .see-more { color: #b45309; text-decoration: none; font-size: 13px; white-space: nowrap; }
+    .see-more:hover { text-decoration: underline; }
+
+    /* Narrative */
+    .narrative { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+    .narrative p { margin-bottom: 12px; font-size: 14px; color: #475569; line-height: 1.7; }
+    .key-insight { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin-top: 12px; font-size: 14px; color: #166534; }
+
+    /* Tables */
+    .section-intro { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+    th { background: #f8fafc; text-align: left; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 10px 16px; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+    tr:last-child td { border-bottom: none; }
+
+    /* Big Wins */
+    .big-wins { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .big-win { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; }
+    .big-win-title { font-weight: 600; font-size: 15px; color: #166534; margin-bottom: 8px; }
+    .big-win-desc { font-size: 14px; color: #15803d; line-height: 1.5; }
+
+    /* Friction */
+    .friction-categories { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+    .friction-category { background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 16px; }
+    .friction-title { font-weight: 600; font-size: 15px; color: #991b1b; margin-bottom: 6px; }
+    .friction-desc { font-size: 13px; color: #7f1d1d; }
+
+    /* Changes list */
+    .changes-list { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 24px; }
+    .changes-list ul { list-style: none; padding: 0; }
+    .changes-list li { padding: 6px 0; font-size: 14px; color: #475569; border-bottom: 1px solid #f1f5f9; }
+    .changes-list li:last-child { border-bottom: none; }
+    .changes-list li strong { color: #0f172a; }
+
+    /* Recommendations */
+    .recommendation { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .rec-title { font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 8px; }
+    .rec-desc { font-size: 14px; color: #475569; line-height: 1.6; }
+    .rec-actions { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+    .rec-actions li { font-size: 13px; color: #334155; margin-bottom: 4px; }
+
+    /* Features */
+    .features-section { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+    .feature-card { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 16px; }
+    .feature-title { font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 6px; }
+    .feature-oneliner { font-size: 14px; color: #475569; margin-bottom: 8px; }
+    .feature-why { font-size: 13px; color: #334155; line-height: 1.5; }
+    .feature-code { background: #f8fafc; padding: 12px; border-radius: 6px; margin-top: 12px; border: 1px solid #e2e8f0; display: flex; align-items: flex-start; gap: 8px; }
+    .feature-code code { flex: 1; font-family: monospace; font-size: 12px; color: #334155; white-space: pre-wrap; }
+
+    /* Patterns */
+    .patterns-section { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+    .pattern-card { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 8px; padding: 16px; }
+    .pattern-title { font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 6px; }
+    .pattern-summary { font-size: 14px; color: #475569; margin-bottom: 8px; }
+    .pattern-detail { font-size: 13px; color: #334155; line-height: 1.5; }
+    .copyable-prompt-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+    .prompt-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+    .copyable-prompt-row { display: flex; align-items: flex-start; gap: 8px; }
+    .copyable-prompt { flex: 1; background: #f8fafc; padding: 10px 12px; border-radius: 4px; font-family: monospace; font-size: 12px; color: #334155; border: 1px solid #e2e8f0; white-space: pre-wrap; line-height: 1.5; }
+
+    /* Charts */
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+    .chart-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; }
+    .chart-title { font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 12px; }
+    .bar-row { display: flex; align-items: center; margin-bottom: 6px; }
+    .bar-label { width: 120px; font-size: 11px; color: #475569; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-track { flex: 1; height: 6px; background: #f1f5f9; border-radius: 3px; margin: 0 8px; }
+    .bar-fill { height: 100%; border-radius: 3px; }
+    .bar-value { width: 40px; font-size: 11px; font-weight: 500; color: #64748b; text-align: right; }
+
+    /* Horizon */
+    .horizon-section { display: flex; flex-direction: column; gap: 16px; }
+    .horizon-card { background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%); border: 1px solid #c4b5fd; border-radius: 8px; padding: 16px; }
+    .horizon-title { font-weight: 600; font-size: 15px; color: #5b21b6; margin-bottom: 8px; }
+    .horizon-possible { font-size: 14px; color: #334155; margin-bottom: 10px; line-height: 1.5; }
+    .horizon-tip { font-size: 13px; color: #6b21a8; background: rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 4px; }
+
+    /* Fun ending */
+    .fun-ending { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #fbbf24; border-radius: 12px; padding: 24px; margin-top: 40px; text-align: center; }
+    .fun-headline { font-size: 18px; font-weight: 600; color: #78350f; margin-bottom: 8px; }
+    .fun-detail { font-size: 14px; color: #92400e; }
+
+    /* Copy button */
+    .copy-btn { background: #e2e8f0; border: none; border-radius: 4px; padding: 4px 8px; font-size: 11px; cursor: pointer; color: #475569; flex-shrink: 0; }
+    .copy-btn:hover { background: #cbd5e1; }
+
+    /* Footer */
+    .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 13px; color: #94a3b8; }
+
+    @media (max-width: 640px) { .charts-row { grid-template-columns: 1fr; } .stats-row { justify-content: center; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Claude Code Insights</h1>
+    <p class="subtitle">{totalMessages} messages across {totalSessions} sessions | {firstDate} to {lastDate}</p>
+
+    <!-- At a Glance -->
+    <div class="at-a-glance">
+      <div class="glance-title">At a Glance</div>
+      <div class="glance-sections">
+        <div class="glance-section"><strong>What's working:</strong> {whats_working} <a href="#section-wins" class="see-more">Impressive Things &rarr;</a></div>
+        <div class="glance-section"><strong>What's hindering:</strong> {whats_hindering} <a href="#section-friction" class="see-more">Where Things Go Wrong &rarr;</a></div>
+        <div class="glance-section"><strong>Quick wins:</strong> {quick_wins} <a href="#section-recommendations" class="see-more">Recommendations &rarr;</a></div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-toc">
+      <a href="#section-usage">How You Use CC</a>
+      <a href="#section-setup">Current Setup</a>
+      <a href="#section-activity">Session Activity</a>
+      <a href="#section-wins">Impressive Things</a>
+      <a href="#section-friction">Where Things Go Wrong</a>
+      <a href="#section-changes">What Changed</a>
+      <a href="#section-recommendations">Recommendations</a>
+      <a href="#section-features">Features to Try</a>
+      <a href="#section-patterns">New Patterns</a>
+      <a href="#section-horizon">On the Horizon</a>
+    </nav>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat"><div class="stat-value">{totalMessages}</div><div class="stat-label">Messages</div></div>
+      <div class="stat"><div class="stat-value">{totalSessions}</div><div class="stat-label">Sessions</div></div>
+      <div class="stat"><div class="stat-value">{activeDays}</div><div class="stat-label">Active Days</div></div>
+      <div class="stat"><div class="stat-value">{msgsPerDay}</div><div class="stat-label">Msgs/Day</div></div>
+      <div class="stat"><div class="stat-value">{maturityLevel}</div><div class="stat-label">Maturity</div></div>
+    </div>
+
+    <!-- How You Use Claude Code -->
+    <h2 id="section-usage">How You Use Claude Code</h2>
+    <div class="narrative">
+      <p>{usage_narrative}</p>
+      <div class="key-insight"><strong>Key pattern:</strong> {key_pattern}</div>
+    </div>
+
+    <!-- Current Setup -->
+    <h2 id="section-setup">Current Setup</h2>
+    <!-- Insert tables for Hooks, Plugins, Skills, Permissions, CLAUDE.md, Memory -->
+    <!-- Use standard <table> elements with th/td -->
+
+    <!-- Session Activity -->
+    <h2 id="section-activity">Session Activity</h2>
+    <!-- Insert stats table and bar charts using .charts-row, .chart-card, .bar-row pattern -->
+
+    <!-- Impressive Things -->
+    <h2 id="section-wins">Impressive Things You're Doing</h2>
+    <div class="big-wins">
+      <!-- Repeat for each win -->
+      <div class="big-win">
+        <div class="big-win-title">{win_title}</div>
+        <div class="big-win-desc">{win_description}</div>
+      </div>
+    </div>
+
+    <!-- Friction -->
+    <h2 id="section-friction">Where Things Could Improve</h2>
+    <div class="friction-categories">
+      <!-- Repeat for each friction point -->
+      <div class="friction-category">
+        <div class="friction-title">{friction_title}</div>
+        <div class="friction-desc">{friction_description}</div>
+      </div>
+    </div>
+
+    <!-- What Changed -->
+    <h2 id="section-changes">What Changed</h2>
+    <div class="changes-list">
+      <ul>
+        <!-- Repeat for each category -->
+        <li><strong>{category}:</strong> {change_summary}</li>
+      </ul>
+    </div>
+
+    <!-- Recommendations -->
+    <h2 id="section-recommendations">Recommendations</h2>
+    <!-- Repeat for each recommendation -->
+    <div class="recommendation">
+      <div class="rec-title">{n}. {rec_title}</div>
+      <div class="rec-desc">{rec_explanation}</div>
+      <ul class="rec-actions">
+        <li>{action_step}</li>
+      </ul>
+    </div>
+
+    <!-- Features to Try -->
+    <h2 id="section-features">Features to Try</h2>
+    <div class="features-section">
+      <!-- Repeat for each feature -->
+      <div class="feature-card">
+        <div class="feature-title">{feature_name}</div>
+        <div class="feature-oneliner">{one_liner}</div>
+        <div class="feature-why"><strong>Why for you:</strong> {why_relevant}</div>
+        <div class="feature-code">
+          <code>{code_example}</code>
+          <button class="copy-btn" onclick="copyText(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Patterns -->
+    <h2 id="section-patterns">New Ways to Use Claude Code</h2>
+    <div class="patterns-section">
+      <!-- Repeat for each pattern -->
+      <div class="pattern-card">
+        <div class="pattern-title">{pattern_title}</div>
+        <div class="pattern-summary">{pattern_summary}</div>
+        <div class="pattern-detail">{pattern_detail}</div>
+        <div class="copyable-prompt-section">
+          <div class="prompt-label">Paste into Claude Code:</div>
+          <div class="copyable-prompt-row">
+            <code class="copyable-prompt">{prompt_text}</code>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- On the Horizon -->
+    <h2 id="section-horizon">On the Horizon</h2>
+    <div class="horizon-section">
+      <!-- Repeat for each horizon item -->
+      <div class="horizon-card">
+        <div class="horizon-title">{horizon_title}</div>
+        <div class="horizon-possible">{horizon_description}</div>
+        <div class="horizon-tip"><strong>Getting started:</strong> {horizon_tip}</div>
+      </div>
+    </div>
+
+    <!-- Fun Fact -->
+    <div class="fun-ending">
+      <div class="fun-headline">{fun_headline}</div>
+      <div class="fun-detail">{fun_detail}</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Generated by /insights &bull; Run again in 1-2 weeks to track progress
+    </div>
+  </div>
+
+  <script>
+    function copyText(btn) {
+      const code = btn.previousElementSibling;
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

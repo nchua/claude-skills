@@ -45,9 +45,28 @@ On other machines: `git pull` — symlinks pick up changes automatically, no re-
 
 ## Current skills
 
+### Workflow
 - **council** — multi-agent planning from idea dumps
 - **evaluate** — independent QA grader for uncommitted changes
 - **feature** — structured per-layer feature implementation
 - **handoff** — save session state for resumption
+- **idea-dump** — restructure messy stream-of-consciousness asks into a clean prompt + auto plan-mode
+- **insights** — periodic Claude Code workflow audit + recommendations
+- **memory-audit** — verify memory file references still match the codebase
 - **pipeline** — chains council → execute → evaluate → ship
+- **review** — pre-merge review + checks + merge to main
 - **ship** — quality gate (evaluate + simplify + lint) before commit
+
+### Design
+- **design-md** — author/validate `DESIGN.md` (Google Stitch format); pre-made brand starters (Stripe/Linear/Notion/…) mirrored offline from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md). CLI: `npm i -g @google/design.md`.
+- **impeccable** — 22 sub-commands for designing/refining UI in real code (shape, craft, polish, audit, critique, distill, harden, animate, …) plus an anti-pattern detector. Apache 2.0, from [pbakaus/impeccable](https://github.com/pbakaus/impeccable). CLI: `npm i -g impeccable`.
+- **design-work** — orchestrator: diagnoses any open-ended design ask, reads project context, and routes to the right combination of `design-md` / `impeccable` / `frontend-design` / `playground`. Use this as the front door for design work.
+
+### Knowledge / persona
+- **holocron-research** — deep web research → spaced-repetition cards (paired with the [holocron](https://github.com/nchua/holocron) backend)
+- **holocron-refresh** — pull from Gmail/Notion/web → POST cards to Holocron
+- **jarvis-persona** — JARVIS voice / mannerisms
+
+## Mobile usage tips
+
+For the **design-work** orchestrator on mobile claude.ai: it routes to other skills, so upload `design-work.zip`, `design-md.zip`, and `impeccable.zip` together. The CLI parts (`design.md lint`, `impeccable detect`) won't run on mobile — the skill content still works as instruction text for generating DESIGN.md or routing recommendations.
